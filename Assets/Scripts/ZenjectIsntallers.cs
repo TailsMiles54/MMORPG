@@ -31,8 +31,6 @@ public class AuthService : IInitializable
         {
             Debug.LogException(e);
         }
-
-        await InitSignIn();
         
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
     }
