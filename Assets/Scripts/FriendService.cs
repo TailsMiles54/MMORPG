@@ -1,4 +1,5 @@
-﻿using Unity.Services.Authentication;
+﻿using System;
+using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Friends;
 using UnityEngine;
@@ -6,6 +7,7 @@ using Zenject;
 
 public class FriendService : IInitializable
 {
+    public event Action Initialized; 
     public async void Initialize()
     {
         // Initialize all of the used services

@@ -8,12 +8,16 @@ using Zenject;
 
 public class AuthService : IInitializable
 {
+    public event Action Initialized; 
+    
     public async void Initialize()
     {
         try
         {
             await UnityServices.InitializeAsync();
             SetupEvents();
+            AuthenticationService.Instance.SignOut();
+            Initialized?.Invoke();
         }
         catch (Exception e)
         {
@@ -25,7 +29,10 @@ public class AuthService : IInitializable
     
     private void SetupEvents()
     {
-        AuthenticationService.Instance.SignedIn += SignedIn;
+        AuthenticationService.Instance.SignedIn += () => {
+            var accessToken = PlayerAccountService.Instance.AccessToken;
+            Debug.Log($"Player:{accessToken} signed in.");
+        };
 
         AuthenticationService.Instance.SignInFailed += (err) => {
             Debug.LogError(err);
@@ -41,15 +48,9 @@ public class AuthService : IInitializable
         };
     }
 
-    private async void SignedIn()
-    {
-        var accessToken = PlayerAccountService.Instance.AccessToken;
-        await SignInWithUnityAsync(accessToken);
-    }
-
-    private async Task InitSignIn()
+    public async Task InitSignIn()
     { 
-        await PlayerAccountService.Instance.StartSignInAsync();
+        await PlayerAccountService.Instance.StartSignInAsync(true);
     }
     
     async Task SignInWithUnityAsync(string accessToken)
