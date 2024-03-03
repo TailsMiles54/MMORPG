@@ -3,9 +3,8 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Friends;
 using UnityEngine;
-using Zenject;
 
-public class FriendService : IInitializable
+public class FriendService : Singleton<FriendService>
 {
     public event Action Initialized; 
     public async void Initialize()
@@ -21,7 +20,7 @@ public class FriendService : IInitializable
 
         // Start using the Friends SDK functionalities.
         var friends = FriendsService.Instance.Friends;
-        
+        Initialized?.Invoke();        
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
     }
 }
