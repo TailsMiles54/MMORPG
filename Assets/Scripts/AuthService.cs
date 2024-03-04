@@ -16,8 +16,6 @@ public class AuthService : IInitializable
         {
             await UnityServices.InitializeAsync();
             SetupEvents();
-            AuthenticationService.Instance.SignOut();
-            Initialized?.Invoke();
         }
         catch (Exception e)
         {
@@ -25,6 +23,7 @@ public class AuthService : IInitializable
         }
         
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
+        Initialized?.Invoke();
     }
     
     private void SetupEvents()
@@ -47,17 +46,29 @@ public class AuthService : IInitializable
             Debug.Log("Player session could not be refreshed and expired.");
         };
     }
-
-    public async Task InitSignIn()
-    { 
-        await PlayerAccountService.Instance.StartSignInAsync(true);
-    }
     
-    async Task SignInWithUnityAsync(string accessToken)
+    public async Task RegisterWithUsernamePassword(string username, string password)
     {
         try
         {
-            await AuthenticationService.Instance.SignInWithUnityAsync(accessToken);
+            await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
+            Debug.Log("SignUp is successful.");
+        }
+        catch (AuthenticationException ex)
+        {
+            Debug.LogException(ex);
+        }
+        catch (RequestFailedException ex)
+        {
+            Debug.LogException(ex);
+        }
+    }
+    
+    public async Task LoginWithUsernamePasswordAsync(string username, string password)
+    {
+        try
+        {
+            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
             Debug.Log("SignIn is successful.");
         }
         catch (AuthenticationException ex)
