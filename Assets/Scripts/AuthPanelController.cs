@@ -1,3 +1,4 @@
+using System;
 using Unity.Services.Authentication;
 using UnityEngine;
 using Zenject;
@@ -46,6 +47,34 @@ public class AuthPanelController : MonoBehaviour
         }
     }
 
+    public void ChangeType()
+    {
+        switch (_authState)
+        {
+            case AuthState.Login:
+                _authState = AuthState.Register;
+                _authPanelView.RetryPasswordObject.SetActive(true);
+                _authPanelView.CurrentButtonText.text = "Register";
+                _authPanelView.ChangeButtonText.text = "Login";
+                break;
+            case AuthState.Register:
+                _authState = AuthState.Login;
+                _authPanelView.RetryPasswordObject.SetActive(false);
+                _authPanelView.CurrentButtonText.text = "Login";
+                _authPanelView.ChangeButtonText.text = "Register";
+                break;
+        }
+
+        ClearFields();
+    }
+
+    public void ClearFields()
+    {
+        _authPanelView.LoginTMP.text = string.Empty;
+        _authPanelView.PasswordTMP.text = string.Empty;
+        _authPanelView.RetryPasswordTMP.text = string.Empty;
+    }
+    
     public enum AuthState
     {
         Login,
