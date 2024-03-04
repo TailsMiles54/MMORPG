@@ -4,8 +4,9 @@ using Unity.Services.Authentication;
 using Unity.Services.Authentication.PlayerAccounts;
 using Unity.Services.Core;
 using UnityEngine;
+using Zenject;
 
-public class AuthService : Singleton<AuthService>
+public class AuthService : IInitializable
 {
     public event Action Initialized; 
     
@@ -15,6 +16,8 @@ public class AuthService : Singleton<AuthService>
         {
             await UnityServices.InitializeAsync();
             SetupEvents();
+            AuthenticationService.Instance.SignOut();
+            Initialized?.Invoke();
         }
         catch (Exception e)
         {
@@ -22,7 +25,6 @@ public class AuthService : Singleton<AuthService>
         }
         
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
-        Initialized?.Invoke();
     }
     
     private void SetupEvents()
@@ -45,29 +47,17 @@ public class AuthService : Singleton<AuthService>
             Debug.Log("Player session could not be refreshed and expired.");
         };
     }
-    
-    public async Task RegisterWithUsernamePassword(string username, string password)
-    {
-        try
-        {
-            await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
-            Debug.Log("SignUp is successful.");
-        }
-        catch (AuthenticationException ex)
-        {
-            Debug.LogException(ex);
-        }
-        catch (RequestFailedException ex)
-        {
-            Debug.LogException(ex);
-        }
+
+    public async Task InitSignIn()
+    { 
+        await PlayerAccountService.Instance.StartSignInAsync(true);
     }
     
-    public async Task LoginWithUsernamePasswordAsync(string username, string password)
+    async Task SignInWithUnityAsync(string accessToken)
     {
         try
         {
-            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
+            await AuthenticationService.Instance.SignInWithUnityAsync(accessToken);
             Debug.Log("SignIn is successful.");
         }
         catch (AuthenticationException ex)
