@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AuthScene.unity
     guid: f665c175c97773847bd1bec68082b001
+  - enabled: 1
+    path: Assets/Scenes/CharacterSelect.unity
+    guid: f7ff47f5ae019534881ad1ba61debeb0
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: 2c6d53e26b67ac943a42f1f962da1f5a, type: 2}
