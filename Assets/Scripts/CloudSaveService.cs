@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ModestTree;
 using UnityEngine;
 using Zenject;
 
@@ -18,19 +19,6 @@ public class CloudSaveService : IInitializable
 
     public async void SaveData()
     {
-        var playerData = new Dictionary<string, object>
-        {
-            {
-                "characters", new List<CharacterSaveData>()
-                {
-                    new CharacterSaveData(),
-                    new CharacterSaveData(),
-                    new CharacterSaveData()
-                }
-            }
-        };
-        var result = await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.SaveAsync(playerData);
-        Debug.Log($"Saved data {string.Join(',', playerData)}");
     }
 
     public async Task<List<CharacterSaveData>> LoadCharacters()
@@ -51,20 +39,41 @@ public class CloudSaveService : IInitializable
 
     public void LoadDataAfterAuth()
     {
-        // var characters = LoadCharacters().Result;
-        //
-        // if (characters == null || characters.IsEmpty())
-        // {
-        //     SaveData();
-        //     characters = LoadCharacters().Result;
-        // }
-
-        _sceneService.SelectCharacterScene();
+        var characters = LoadCharacters().Result;
+        
+        if (characters == null || characters.IsEmpty())
+        {
+            SaveData();
+            characters = LoadCharacters().Result;
+        }
     }
 
     public class CharacterSaveData
     {
+        public string CharacterId;
         public string Nickname;
         public int Level;
+        public ClassType ClassType;
+    }
+
+    public enum ClassType
+    {
+        TheAdventurer = 0,
+        Warrior = 1,
+        Archer = 2,
+        Mage = 3,
+    }
+
+    public async Task SaveCharacters(List<CharacterSaveData> characters)
+    {
+        var playerData = new Dictionary<string, object>
+        {
+            {
+                "characters", characters
+            }
+        };
+        
+        await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.SaveAsync(playerData);
+        Debug.Log($"Saved data {string.Join(',', playerData)}");
     }
 }

@@ -8,7 +8,7 @@ using Zenject;
 
 public class AuthService : IInitializable
 {
-    [Inject] private CloudSaveService _cloudSaveService;
+    [Inject] private SceneService _sceneService;
     public event Action Initialized; 
     
     public async void Initialize()
@@ -54,7 +54,7 @@ public class AuthService : IInitializable
         {
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
             Debug.Log("SignUp is successful.");
-            _cloudSaveService.LoadDataAfterAuth();
+            _sceneService.SelectCharacterScene();
         }
         catch (AuthenticationException ex)
         {
@@ -72,7 +72,7 @@ public class AuthService : IInitializable
         {
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
             Debug.Log("SignIn is successful.");
-            _cloudSaveService.LoadDataAfterAuth();
+            _sceneService.SelectCharacterScene();
         }
         catch (AuthenticationException ex)
         {
