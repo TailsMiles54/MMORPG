@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using WebSocketSharp;
+using Zenject;
 
 public class CharacterButtonController : MonoBehaviour
 {
     [SerializeField] private CharacterButtonView _characterButtonView;
 
+    [Inject] private CreateCharacterPanel _createCharacterPanel;
+    [Inject] private CharacterSelectPanel _characterSelectPanel;
+
     public void Setup(CloudSaveService.CharacterSaveData characterSaveData)
     {
+        _characterButtonView.Button.onClick.RemoveAllListeners();
+        
         if (characterSaveData.CharacterId.IsNullOrEmpty())
         {
             _characterButtonView.Text.text = "Create new Character";
+            
+            _characterButtonView.Button.onClick.AddListener(CreateCharacter);
             return;
         }
         
@@ -25,7 +33,8 @@ public class CharacterButtonController : MonoBehaviour
     
     public void CreateCharacter()
     {
-        
+        _createCharacterPanel.gameObject.SetActive(true);
+        _characterSelectPanel.gameObject.SetActive(false);
     }
 
     public void SelectCharacter()

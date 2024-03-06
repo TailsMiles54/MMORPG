@@ -5,6 +5,7 @@ using Zenject;
 public class CharacterSelectService : MonoBehaviour, IInitializable
 {
     [Inject] private CloudSaveService _cloudSaveService;
+    [Inject] private DiContainer _diContainer;
 
     [SerializeField] private CharacterSelectPanel _characterSelectPanel;
     [SerializeField] private CreateCharacterPanel _createCharacterPanel;
@@ -25,12 +26,14 @@ public class CharacterSelectService : MonoBehaviour, IInitializable
             };
             await _cloudSaveService.SaveCharacters(_characters);
         }
-
+        
         _characterSelectPanel.Setup(_characters);
     }
 
     public void Initialize()
     {
         GetCharacters();
+        _diContainer.Bind<CharacterSelectPanel>().FromInstance(_characterSelectPanel).NonLazy();
+        _diContainer.Bind<CreateCharacterPanel>().FromInstance(_createCharacterPanel).NonLazy();
     }
 }

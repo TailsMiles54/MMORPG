@@ -1,10 +1,13 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class CharacterSelectPanel : MonoBehaviour
 {
     [SerializeField] private List<CharacterButtonController> _characterButtonControllers;
+    [Inject] private CharacterSelectService _characterSelectService;
+    [Inject] private DiContainer _diContainer;
     
     public void Setup(List<CloudSaveService.CharacterSaveData> characters)
     {
@@ -12,6 +15,9 @@ public class CharacterSelectPanel : MonoBehaviour
         {
             var index = characters.IndexOf(characterSaveData);
             _characterButtonControllers[index].Setup(characterSaveData);
+            
+            через фабрику сделать и не выёбываться
+            _diContainer.Bind<CharacterButtonController>().FromInstance(_characterButtonControllers[index]).NonLazy();
         }
     }
 }
