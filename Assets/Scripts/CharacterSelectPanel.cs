@@ -16,7 +16,6 @@ public class CharacterSelectPanel : MonoBehaviour
             var index = characters.IndexOf(characterSaveData);
             _characterButtonControllers[index].Setup(characterSaveData);
             
-            через фабрику сделать и не выёбываться
             _diContainer.Bind<CharacterButtonController>().FromInstance(_characterButtonControllers[index]).NonLazy();
         }
     }
