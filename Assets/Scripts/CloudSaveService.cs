@@ -10,11 +10,10 @@ public class CloudSaveService : IInitializable
     [Inject] private SceneService _sceneService;
     public event Action Initialized;
 
-    public void Initialize()
+    public async void Initialize()
     {
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
         Initialized?.Invoke();
-        SaveData();
     }
 
     public async void SaveData()
@@ -23,21 +22,29 @@ public class CloudSaveService : IInitializable
 
     public async Task<List<CharacterSaveData>> LoadCharacters()
     {
-        var test = await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string>
+        try
         {
-            "characters"
-        });
-
-
-        if (test.TryGetValue("characters", out var firstKey))
-        {
-            return firstKey.Value.GetAs<List<CharacterSaveData>>();
+            var test = await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string>
+            {
+                "characters"
+            });
+            
+            
+            if (test.TryGetValue("characters", out var firstKey))
+            {
+                return firstKey.Value.GetAs<List<CharacterSaveData>>();
+            }
         }
-
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
         return null;
     }
 
-    public void LoadDataAfterAuth()
+    public async void LoadDataAfterAuth()
     {
         var characters = LoadCharacters().Result;
         
