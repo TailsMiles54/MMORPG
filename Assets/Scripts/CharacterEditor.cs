@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterEditor : MonoBehaviour
 {
@@ -7,11 +8,23 @@ public class CharacterEditor : MonoBehaviour
     [SerializeField] private GameObject _maleBody;
     [SerializeField] private GameObject _femaleBody;
 
+    [SerializeField] private Scrollbar _scrollRectEye;
+    [SerializeField] private Scrollbar _scrollRectMouth;
+    [SerializeField] private Scrollbar _scrollRectHair;
+    [SerializeField] private Scrollbar _scrollRectEyeBrow;
+    
+    [SerializeField] private GameObject[] _eyes;
+    private GameObject _currentEye;
+    
     private Gender _currentGender;
 
     private void Start()
     {
         SelectGender();
+        _scrollRectEye.numberOfSteps = _eyes.Length-1;
+
+        _scrollRectEye.onValueChanged.AddListener(EyeChange);
+        _currentEye = _eyes[0];
     }
 
     private void SelectGender()
@@ -33,6 +46,15 @@ public class CharacterEditor : MonoBehaviour
     {
         _currentGender = Gender.Female;
         SelectGender();
+    }
+
+    public void EyeChange(float test)
+    {
+        int currentStep = Mathf.RoundToInt(test / (1f / _scrollRectEye.numberOfSteps));
+        _currentEye.SetActive(false);
+        Debug.Log(currentStep);
+        _currentEye = _eyes[currentStep];
+        _currentEye.SetActive(true);
     }
 }
 
