@@ -5,7 +5,10 @@ using Zenject;
 
 public class CharacterSelectPanel : MonoBehaviour
 {
-    [SerializeField] private List<CharacterButtonController> _characterButtonControllers;
+    [SerializeField] private CharacterButtonController _characterButtonController;
+    [SerializeField] private Transform _parentForButtons;
+    
+    private List<CharacterButtonController> _characterButtonControllers;
     [Inject] private CharacterSelectService _characterSelectService;
     [Inject] private DiContainer _diContainer;
     
@@ -13,10 +16,19 @@ public class CharacterSelectPanel : MonoBehaviour
     {
         foreach (var characterSaveData in characters)
         {
-            var index = characters.IndexOf(characterSaveData);
-            _characterButtonControllers[index].Setup(characterSaveData);
-            
-            _diContainer.Bind<CharacterButtonController>().FromInstance(_characterButtonControllers[index]).NonLazy();
+            var newCharacterButtonObject = _diContainer.InstantiatePrefab(_characterButtonController, _parentForButtons);
+            var newCharacterButtonController = newCharacterButtonObject.GetComponent<CharacterButtonController>();
+            newCharacterButtonController.Setup(characterSaveData);
         }
     }
 }
+
+// public class CharacterButtonControllerFactory : IFactory<CharacterButtonControllerFactory>
+// {
+//     public CharacterButtonControllerFactory Create()
+//     {
+//         var _characterButtonController = ;
+//         
+//         return var 
+//     }
+// }
