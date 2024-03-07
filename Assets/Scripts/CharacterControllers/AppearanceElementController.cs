@@ -18,8 +18,9 @@ public class AppearanceElementController
         {
             element.SetActive(false);
         }
-        
-        Objects.First().SetActive(true);
+
+        _current = Objects.First();
+        _current.SetActive(true);
     }
 
     public void ChangePart(int index)
@@ -36,7 +37,6 @@ public class AppearanceElementController
 public enum AppearanceType
 {
     Eye = 0,
-    EyeBrow = 1,
     Mouth = 2,
     Hair = 3,
     
