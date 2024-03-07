@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,23 +11,18 @@ public class CharacterEditor : MonoBehaviour
     [SerializeField] private GameObject _maleBody;
     [SerializeField] private GameObject _femaleBody;
 
-    [SerializeField] private Scrollbar _scrollRectEye;
-    [SerializeField] private Scrollbar _scrollRectMouth;
-    [SerializeField] private Scrollbar _scrollRectHair;
-    [SerializeField] private Scrollbar _scrollRectEyeBrow;
-    
-    [SerializeField] private GameObject[] _eyes;
-    private GameObject _currentEye;
+    [SerializeField] private CharacterAppearanceController _characterAppearanceController;
+    [SerializeField] private List<SliderAppearance> _slidersApeearanceList;
     
     private Gender _currentGender;
 
     private void Start()
     {
         SelectGender();
-        _scrollRectEye.numberOfSteps = _eyes.Length-1;
-
-        _scrollRectEye.onValueChanged.AddListener(EyeChange);
-        _currentEye = _eyes[0];
+        foreach (var sliderAppearance in _slidersApeearanceList)
+        {
+            sliderAppearance.Start(_characterAppearanceController.GetAppearanceElementController(sliderAppearance.AppearanceType));
+        }
     }
 
     private void SelectGender()
@@ -47,14 +45,31 @@ public class CharacterEditor : MonoBehaviour
         _currentGender = Gender.Female;
         SelectGender();
     }
+}
 
-    public void EyeChange(float test)
+[Serializable]
+public class SliderAppearance
+{
+    [SerializeField] private Scrollbar _scrollbar;
+    [field: SerializeField] public AppearanceType AppearanceType { get; private set; }
+    private AppearanceElementController _appearanceElementController;
+
+    public void Start(AppearanceElementController appearanceElementController)
     {
-        int currentStep = Mathf.RoundToInt(test / (1f / _scrollRectEye.numberOfSteps));
-        _currentEye.SetActive(false);
-        Debug.Log(currentStep);
-        _currentEye = _eyes[currentStep];
-        _currentEye.SetActive(true);
+        _appearanceElementController = appearanceElementController;
+        
+        _scrollbar.numberOfSteps = _appearanceElementController.Objects.Length-1;
+
+        _scrollbar.onValueChanged.AddListener((value) =>
+        {
+            int currentStep = Mathf.RoundToInt(value / (1f / _scrollbar.numberOfSteps));
+            _appearanceElementController.ChangePart(currentStep);
+        });
+    }
+
+    ~SliderAppearance()
+    {
+        _scrollbar.onValueChanged.RemoveAllListeners();
     }
 }
 

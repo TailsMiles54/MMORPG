@@ -22,13 +22,3 @@ public class CharacterSelectPanel : MonoBehaviour
         }
     }
 }
-
-// public class CharacterButtonControllerFactory : IFactory<CharacterButtonControllerFactory>
-// {
-//     public CharacterButtonControllerFactory Create()
-//     {
-//         var _characterButtonController = ;
-//         
-//         return var 
-//     }
-// }
