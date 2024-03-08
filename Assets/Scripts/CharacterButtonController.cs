@@ -9,7 +9,7 @@ public class CharacterButtonController : MonoBehaviour
 {
     [SerializeField] private CharacterButtonView _characterButtonView;
 
-    [Inject] private CreateCharacterPanel _createCharacterPanel;
+    [Inject] private CharacterEditor _characterEditor;
     [Inject] private CharacterSelectPanel _characterSelectPanel;
 
     public void Setup(CloudSaveService.CharacterSaveData characterSaveData)
@@ -33,7 +33,7 @@ public class CharacterButtonController : MonoBehaviour
     
     public void CreateCharacter()
     {
-        _createCharacterPanel.gameObject.SetActive(true);
+        _characterEditor.gameObject.SetActive(true);
         _characterSelectPanel.gameObject.SetActive(false);
     }
 

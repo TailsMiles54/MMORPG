@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 public class CharacterSelectService : MonoBehaviour, IInitializable
@@ -8,32 +9,32 @@ public class CharacterSelectService : MonoBehaviour, IInitializable
     [Inject] private DiContainer _diContainer;
 
     [SerializeField] private CharacterSelectPanel _characterSelectPanel;
-    [SerializeField] private CreateCharacterPanel _createCharacterPanel;
+    [SerializeField] private CharacterEditor _characterEditor;
 
-    private List<CloudSaveService.CharacterSaveData> _characters = new List<CloudSaveService.CharacterSaveData>();
+    public List<CloudSaveService.CharacterSaveData> Characters { get; private set; } = new List<CloudSaveService.CharacterSaveData>();
     
     public async void GetCharacters()
     {
-        _characters = await _cloudSaveService.LoadCharacters();
+        Characters = await _cloudSaveService.LoadCharacters();
 
-        if (_characters == null)
+        if (Characters == null)
         {
-            _characters = new List<CloudSaveService.CharacterSaveData>()
+            Characters = new List<CloudSaveService.CharacterSaveData>()
             {
                 new CloudSaveService.CharacterSaveData(),
                 new CloudSaveService.CharacterSaveData(),
                 new CloudSaveService.CharacterSaveData(),
             };
-            await _cloudSaveService.SaveCharacters(_characters);
+            await _cloudSaveService.SaveCharacters(Characters);
         }
         
-        _characterSelectPanel.Setup(_characters);
+        _characterSelectPanel.Setup(Characters);
     }
 
     public void Initialize()
     {
         GetCharacters();
         _diContainer.Bind<CharacterSelectPanel>().FromInstance(_characterSelectPanel).NonLazy();
-        _diContainer.Bind<CreateCharacterPanel>().FromInstance(_createCharacterPanel).NonLazy();
+        _diContainer.Bind<CharacterEditor>().FromInstance(_characterEditor).NonLazy();
     }
 }

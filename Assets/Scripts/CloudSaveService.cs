@@ -16,8 +16,13 @@ public class CloudSaveService : IInitializable
         Initialized?.Invoke();
     }
 
-    public async void SaveData()
+    public async Task SaveCharacterData(List<CharacterSaveData> characterSaveData)
     {
+        var playerData = new Dictionary<string, object>{
+            {"characters", characterSaveData},
+        };
+        await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.SaveAsync(playerData);
+        Debug.Log($"Saved data {string.Join(',', playerData)}");
     }
 
     public async Task<List<CharacterSaveData>> LoadCharacters()
@@ -43,24 +48,23 @@ public class CloudSaveService : IInitializable
         
         return null;
     }
-
-    public async void LoadDataAfterAuth()
-    {
-        var characters = LoadCharacters().Result;
-        
-        if (characters == null || characters.IsEmpty())
-        {
-            SaveData();
-            characters = LoadCharacters().Result;
-        }
-    }
-
+    
+    [Serializable]
     public class CharacterSaveData
     {
         public string CharacterId;
         public string Nickname;
         public int Level;
         public ClassType ClassType;
+        public Gender Gender;
+        public List<AppearanceSaveData> AppearanceSaveData = new List<AppearanceSaveData>();
+    }
+
+    [Serializable]
+    public class AppearanceSaveData
+    {
+        public AppearanceType AppearanceType;
+        public int Index;
     }
 
     public enum ClassType

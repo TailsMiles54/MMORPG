@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using WebSocketSharp;
+using Zenject;
 
 public class CharacterEditor : MonoBehaviour
 {
@@ -11,10 +16,15 @@ public class CharacterEditor : MonoBehaviour
     [SerializeField] private GameObject _maleBody;
     [SerializeField] private GameObject _femaleBody;
 
+    [SerializeField] private TMP_InputField _nameField;
+    
     [SerializeField] private CharacterAppearanceController _characterAppearanceController;
     [SerializeField] private List<SliderAppearance> _slidersApeearanceList;
     
     private Gender _currentGender;
+
+    [Inject] private CloudSaveService _cloudSaveService;
+    [Inject] private CharacterSelectService _characterSelectService;
 
     private void Start()
     {
@@ -23,6 +33,36 @@ public class CharacterEditor : MonoBehaviour
         {
             sliderAppearance.Start(_characterAppearanceController.GetAppearanceElementController(sliderAppearance.AppearanceType));
         }
+    }
+
+    public async void CreateCharacter()
+    {
+        var characters = _characterSelectService.Characters;
+
+        if (_nameField.text.IsNullOrEmpty() || characters.Any(x => x.Nickname == _nameField.text))
+        {
+            _nameField.transform.DOShakePosition(1, 3);
+            return;
+        }
+            
+        var emptyCharacterData = characters.First(x => x.CharacterId.IsNullOrEmpty());
+
+        emptyCharacterData.CharacterId = Guid.NewGuid().ToString();
+        emptyCharacterData.Nickname = _nameField.text;
+
+        emptyCharacterData.Gender = _currentGender;
+        emptyCharacterData.ClassType = CloudSaveService.ClassType.TheAdventurer;
+        
+        foreach (var sliderAppearance in _slidersApeearanceList)
+        {
+            emptyCharacterData.AppearanceSaveData.Add(new CloudSaveService.AppearanceSaveData()
+            {
+                AppearanceType = sliderAppearance.AppearanceType,
+                Index = sliderAppearance.CurrentIndex
+            });
+        }
+        
+        await _cloudSaveService.SaveCharacterData(characters);
     }
 
     private void SelectGender()
@@ -50,26 +90,28 @@ public class CharacterEditor : MonoBehaviour
 [Serializable]
 public class SliderAppearance
 {
-    [SerializeField] private Scrollbar _scrollbar;
+    [field: SerializeField] public Scrollbar Scrollbar { get; private set; }
     [field: SerializeField] public AppearanceType AppearanceType { get; private set; }
     private AppearanceElementController _appearanceElementController;
+
+    public int CurrentIndex => Mathf.RoundToInt(Scrollbar.value / (1f / Scrollbar.numberOfSteps));
 
     public void Start(AppearanceElementController appearanceElementController)
     {
         _appearanceElementController = appearanceElementController;
         
-        _scrollbar.numberOfSteps = _appearanceElementController.Objects.Length-1;
+        Scrollbar.numberOfSteps = _appearanceElementController.Objects.Length-1;
 
-        _scrollbar.onValueChanged.AddListener((value) =>
+        Scrollbar.onValueChanged.AddListener((value) =>
         {
-            int currentStep = Mathf.RoundToInt(value / (1f / _scrollbar.numberOfSteps));
+            int currentStep = CurrentIndex;
             _appearanceElementController.ChangePart(currentStep);
         });
     }
 
     ~SliderAppearance()
     {
-        _scrollbar.onValueChanged.RemoveAllListeners();
+        Scrollbar.onValueChanged.RemoveAllListeners();
     }
 }
 
