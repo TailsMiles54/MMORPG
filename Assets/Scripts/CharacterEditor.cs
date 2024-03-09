@@ -35,6 +35,22 @@ public class CharacterEditor : MonoBehaviour
         }
     }
 
+    public void ClearEditor()
+    {
+        _currentGender = Gender.Male;
+        foreach (var sliderAppearance in _slidersApeearanceList)
+        {
+            sliderAppearance.Scrollbar.value = 0;
+        }
+
+        _nameField.text = string.Empty;
+    }
+
+    public async void GoBack()
+    {
+        await _characterSelectService.OpenCharactersList();
+    }
+
     public async void CreateCharacter()
     {
         var characters = _characterSelectService.Characters;
@@ -63,6 +79,7 @@ public class CharacterEditor : MonoBehaviour
         }
         
         await _cloudSaveService.SaveCharacterData(characters);
+        await _characterSelectService.OpenCharactersList();
     }
 
     private void SelectGender()

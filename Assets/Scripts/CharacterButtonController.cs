@@ -33,12 +33,8 @@ public class CharacterButtonController : MonoBehaviour
     
     public void CreateCharacter()
     {
+        _characterEditor.ClearEditor();
         _characterEditor.gameObject.SetActive(true);
         _characterSelectPanel.gameObject.SetActive(false);
-    }
-
-    public void SelectCharacter()
-    {
-        
     }
 }

@@ -29,13 +29,13 @@ public class CloudSaveService : IInitializable
     {
         try
         {
-            var test = await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string>
+            var characters = await Unity.Services.CloudSave.CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string>
             {
                 "characters"
             });
             
             
-            if (test.TryGetValue("characters", out var firstKey))
+            if (characters.TryGetValue("characters", out var firstKey))
             {
                 return firstKey.Value.GetAs<List<CharacterSaveData>>();
             }

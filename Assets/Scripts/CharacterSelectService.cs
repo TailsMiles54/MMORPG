@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
@@ -13,7 +14,7 @@ public class CharacterSelectService : MonoBehaviour, IInitializable
 
     public List<CloudSaveService.CharacterSaveData> Characters { get; private set; } = new List<CloudSaveService.CharacterSaveData>();
     
-    public async void GetCharacters()
+    private async void GetCharacters()
     {
         Characters = await _cloudSaveService.LoadCharacters();
 
@@ -29,6 +30,15 @@ public class CharacterSelectService : MonoBehaviour, IInitializable
         }
         
         _characterSelectPanel.Setup(Characters);
+    }
+
+    public async Task OpenCharactersList()
+    {
+        var loadedCharacters = await _cloudSaveService.LoadCharacters();
+        _characterSelectPanel.UpdateButtons(loadedCharacters);
+        
+        _characterSelectPanel.gameObject.SetActive(true);
+        _characterEditor.gameObject.SetActive(false);
     }
 
     public void Initialize()

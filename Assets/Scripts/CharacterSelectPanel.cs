@@ -8,7 +8,7 @@ public class CharacterSelectPanel : MonoBehaviour
     [SerializeField] private CharacterButtonController _characterButtonController;
     [SerializeField] private Transform _parentForButtons;
     
-    private List<CharacterButtonController> _characterButtonControllers;
+    private List<CharacterButtonController> _characterButtonControllers = new List<CharacterButtonController>();
     [Inject] private CharacterSelectService _characterSelectService;
     [Inject] private DiContainer _diContainer;
     
@@ -18,7 +18,21 @@ public class CharacterSelectPanel : MonoBehaviour
         {
             var newCharacterButtonObject = _diContainer.InstantiatePrefab(_characterButtonController, _parentForButtons);
             var newCharacterButtonController = newCharacterButtonObject.GetComponent<CharacterButtonController>();
+            
+            _characterButtonControllers.Add(newCharacterButtonController);
+            
             newCharacterButtonController.Setup(characterSaveData);
+        }
+    }
+
+    public void UpdateButtons(List<CloudSaveService.CharacterSaveData> characters)
+    {
+        foreach (var characterButtonController in _characterButtonControllers)
+        {
+            var index = _characterButtonControllers.IndexOf(characterButtonController);
+            var character = characters[index];
+            
+            characterButtonController.Setup(character);
         }
     }
 }
