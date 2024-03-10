@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public class CharacterSelectPanel : MonoBehaviour
@@ -9,10 +10,13 @@ public class CharacterSelectPanel : MonoBehaviour
     [SerializeField] private Transform _parentForButtons;
     [SerializeField] private CharacterAppearanceController _characterAppearanceController;
     [SerializeField] private GameObject _characterView;
+    [field :SerializeField] public Button DeleteButton { get; private set; }
     
     private List<CharacterButtonController> _characterButtonControllers = new List<CharacterButtonController>();
     [Inject] private CharacterSelectService _characterSelectService;
     [Inject] private DiContainer _diContainer;
+
+    public string SelectedCharacter;
     
     public void Setup(List<CloudSaveService.CharacterSaveData> characters)
     {
