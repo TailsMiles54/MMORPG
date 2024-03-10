@@ -41,12 +41,17 @@ public class SceneService : IInitializable
     {
         if (_authServiceLaunched && _cloudSaveServiceLaunched && _photonServiceLaunched && _friendServiceLaunched)
         {
-            SceneManager.LoadSceneAsync("AuthScene");
+            AuthScene();
         }
     }
 
     public void SelectCharacterScene()
     {
         SceneManager.LoadSceneAsync("CharacterSelect");
+    }
+
+    public void AuthScene()
+    {
+        SceneManager.LoadSceneAsync("AuthScene");
     }
 }

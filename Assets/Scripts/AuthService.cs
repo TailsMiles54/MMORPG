@@ -83,4 +83,10 @@ public class AuthService : IInitializable
             Debug.LogException(ex);
         }
     }
+
+    public void LogOut()
+    {
+        AuthenticationService.Instance.SignOut();
+        _sceneService.AuthScene();
+    }
 }

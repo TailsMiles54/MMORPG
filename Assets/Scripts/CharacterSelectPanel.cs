@@ -14,9 +14,10 @@ public class CharacterSelectPanel : MonoBehaviour
     
     private List<CharacterButtonController> _characterButtonControllers = new List<CharacterButtonController>();
     [Inject] private CharacterSelectService _characterSelectService;
+    [Inject] private AuthService _authService;
     [Inject] private DiContainer _diContainer;
 
-    public string SelectedCharacter;
+    [HideInInspector] public string SelectedCharacter;
     
     public void Setup(List<CloudSaveService.CharacterSaveData> characters)
     {
@@ -29,6 +30,11 @@ public class CharacterSelectPanel : MonoBehaviour
             
             newCharacterButtonController.Setup(characterSaveData, _characterAppearanceController, _characterView);
         }
+    }
+
+    public void Exit()
+    {
+        _authService.LogOut(); 
     }
 
     public void UpdateButtons(List<CloudSaveService.CharacterSaveData> characters)
