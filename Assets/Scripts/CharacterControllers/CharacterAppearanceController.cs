@@ -19,6 +19,20 @@ public class CharacterAppearanceController : MonoBehaviour
         return _appearanceElementControllers.First(x => x.AppearanceType == appearanceType);
     }
 
+    public void SetupDefault()
+    {
+        foreach (var appearanceData in _appearanceElementControllers)
+        {
+            var appearancePart =
+                GetAppearanceElementController(appearanceData.AppearanceType);
+            
+            appearancePart.ChangePart(0);
+        }
+        
+        GetAppearanceElementController(AppearanceType.Body).ChangePart(0);
+        GetAppearanceElementController(AppearanceType.Body).ChangePart(0);
+    }
+
     public void SetupFromCharacterData(Gender gender, List<CloudSaveService.AppearanceSaveData> appearanceSaveData)
     {
         foreach (var appearanceData in appearanceSaveData)

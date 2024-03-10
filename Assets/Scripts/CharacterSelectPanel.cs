@@ -29,6 +29,7 @@ public class CharacterSelectPanel : MonoBehaviour
 
     public void UpdateButtons(List<CloudSaveService.CharacterSaveData> characters)
     {
+        _characterView.SetActive(false);
         foreach (var characterButtonController in _characterButtonControllers)
         {
             var index = _characterButtonControllers.IndexOf(characterButtonController);

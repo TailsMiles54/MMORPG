@@ -42,7 +42,7 @@ public class CharacterEditor : MonoBehaviour
         {
             sliderAppearance.Scrollbar.value = 0;
         }
-
+        _characterAppearanceController.SetupDefault();
         _nameField.text = string.Empty;
     }
 
@@ -109,20 +109,20 @@ public class SliderAppearance
 {
     [field: SerializeField] public Scrollbar Scrollbar { get; private set; }
     [field: SerializeField] public AppearanceType AppearanceType { get; private set; }
-    private AppearanceElementController _appearanceElementController;
+    [field: SerializeField] public AppearanceElementController AppearanceElementController { get; private set; }
 
     public int CurrentIndex => Mathf.RoundToInt(Scrollbar.value / (1f / Scrollbar.numberOfSteps));
 
     public void Start(AppearanceElementController appearanceElementController)
     {
-        _appearanceElementController = appearanceElementController;
+        AppearanceElementController = appearanceElementController;
         
-        Scrollbar.numberOfSteps = _appearanceElementController.Objects.Length-1;
+        Scrollbar.numberOfSteps = AppearanceElementController.Objects.Length-1;
 
         Scrollbar.onValueChanged.AddListener((value) =>
         {
             int currentStep = CurrentIndex;
-            _appearanceElementController.ChangePart(currentStep);
+            AppearanceElementController.ChangePart(currentStep);
         });
     }
 
