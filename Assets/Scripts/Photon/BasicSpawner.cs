@@ -39,15 +39,18 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (Input.GetKey(KeyCode.W))
             data.Direction += Vector3.forward;
 
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
             data.Direction += Vector3.back;
 
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
             data.Direction += Vector3.left;
 
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
             data.Direction += Vector3.right;
 
+        else
+            return;
+        
         input.Set(data);
     }
     
