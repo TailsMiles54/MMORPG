@@ -54,4 +54,9 @@ public class SceneService : IInitializable
     {
         SceneManager.LoadSceneAsync("AuthScene");
     }
+
+    public void GameTestScene()
+    {
+        SceneManager.LoadSceneAsync("Scenes/GameTest");
+    }
 }

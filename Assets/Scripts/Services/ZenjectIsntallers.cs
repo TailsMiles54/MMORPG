@@ -11,6 +11,7 @@ public class ZenjectInstallers : MonoInstaller
         Container.BindInterfacesAndSelfTo<CloudSaveService>().AsCached().NonLazy();
         Container.BindInterfacesAndSelfTo<PhotonService>().AsCached().NonLazy();
         Container.BindInterfacesAndSelfTo<FriendService>().AsCached().NonLazy();
+        Container.Bind<CharacterService>().AsCached().NonLazy();
     }
 }
 
@@ -22,5 +23,15 @@ public class PhotonService : IInitializable
     {
         Debug.Log($"<color=green>{GetType().Name} initalized</color>");
         Initialized?.Invoke();
+    }
+}
+
+public class CharacterService
+{
+    public string CurrentCharacter { get; private set; }
+    
+    public void SetCharacterId(string id)
+    {
+        CurrentCharacter = id;
     }
 }
